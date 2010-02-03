@@ -1,7 +1,16 @@
 module ExtOnReadyHelper
   def queue_for__on_ready(kv={}, &block)
     index = kv.delete(:index)
-    content = capture(&block)
+
+    # capture or require content
+    if block_given?
+      content = capture(&block)
+    else
+      raise "need :content if no block is given" if not kv.key? :content
+      content = kv[:content].to_s
+    end
+
+    
     queue_for({:name => "ext_on_ready", :index => index, :content => content})
   end
   
